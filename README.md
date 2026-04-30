@@ -6,21 +6,16 @@ Normalt kjører JavaScript i nettleseren (Chrome, Firefox osv.), men med Node ka
 - bygge API-er
 - koble frontend og backend
 
----
-Hva er målet for dagen?
----
-*Bygge en “mini-nettside-server”*
+*Hva er målet for dagen? - Bygge en “mini-nettside-server”*
 
 **Målet er at du skal kunne:**
 - Lage en basic HTML side
 - Koble en HTML-fil til en Node.js server
 - Ikke bruke “Go Live” men heller terminalen
 
----
-Installasjoner
----
+**Installasjoner**
 
-Opprett en ny mappe og åpne den i vscode
+Opprett en ny mappe og åpne den i VScode
 
 Lag denne mappestrukturen:
 ````
@@ -126,8 +121,82 @@ path.join(...)
 - lager riktig filsti
 - fungerer på Mac, Windows og Linux
 
+***STEG 3 - Start serveren***
+
 ```
 app.listen(3003, () => {
     console.log('Server running on http://localhost:3003');
 });
 ```
+Hva skjer her?
+- 3003 = port nummer
+- serveren kjører på http://localhost:3003
+
+---
+Del 2 - Koble til SQL
+---
+Nå skal vi ta serveren ett steg videre
+
+Vi skal
+- koble Node.js til en database
+- hente data fra en tabell (users)
+- lage API-endpoints (/api/users, /filter)
+- bruke .env for sikkerhet
+- skjule sensitive data fra koden
+- strukturere prosjektet litt mer “ekte backend”
+
+**Installasjoner**
+```
+brew install mariadb
+brew install mysql
+
+npm install dotenv
+```
+
+*Legg til disse to filene i rot mappen*
+```
+.env
+.gitignore
+```
+
+.env filen inneholder sensitivt data som:
+````
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=passord
+DB_DATABASE=mydb
+DB_LIMIT=5
+````
+.gitignore bestemmer vi hva som IKKE skal lastes opp til GitHub:
+````
+node_modules
+.env
+````
+
+**Koble databasen til server.js**
+
+Server.js:
+Laster inn:
+- database-driver
+- miljøvariabler fra .env
+```
+const mariadb = require('mariadb');
+require('dotenv').config();
+```
+
+Koble til databasen:
+- bruker info fra .env
+- pool = flere koblinger samtidig (mer effektivt)
+````
+const pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE,
+    connectionLimit: parseInt(process.env.DB_LIMIT) || 5
+});
+````
+
+Hente data fra databasen:
+
+Når vi koblet index.html til serveren brukte vi **app.get** som betyr at vi ber node å hente data
