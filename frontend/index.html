@@ -6,6 +6,47 @@
     <title>Node.js Kurs</title>
 </head>
 <body>
-    
+
+    <h1>Books</h1>
+
+    <div id="userData"></div>
+
+<script>
+
+async function getBooks() {
+
+    try {
+
+        const response = await fetch("/books");
+        const books = await response.json();
+
+        const container = document.getElementById("userData");
+
+        container.innerHTML = "";
+
+        books.forEach(book => {
+
+            container.innerHTML += `
+                <p>
+                    ${book.title} - ${book.author} (${book.year_published})
+                </p>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error("Feil:", error);
+
+        document.getElementById("userData").innerHTML =
+            "<p>Kunne ikke hente bøker</p>";
+
+    }
+}
+
+getBooks();
+
+</script>
+
 </body>
 </html>

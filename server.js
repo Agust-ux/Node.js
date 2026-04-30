@@ -1,21 +1,45 @@
 const express = require('express');
 const path = require('path');
+const mariadb = require('mariadb');
+require('dotenv').config();
 
 const app = express();
 
+app.use(express.json());
+
+const pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE,
+    connectionLimit: parseInt(process.env.DB_LIMIT) || 5
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/index.html'));
+});
 
-    const sql = "SELECT title, author, year_published FROM books";
+app.get('/books', async (req, res) => {
 
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
+    let conn;
 
-        res.json(rows);
-    });
+    try {
+        conn = await pool.getConnection();
+
+        const books = await conn.query(
+            "SELECT title, author, year_published FROM books"
+        );
+
+        res.json(books);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Database error" });
+
+    } finally {
+        if (conn) conn.end();
+    }
+
 });
 
 app.listen(3008, () => {
