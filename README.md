@@ -74,6 +74,15 @@ npm install -g nodemon
 
 Vi skal gjøre følgende
 
+***STEG 1 - Grunnleggende oppsett***
+
+````
+const express = require('express');
+const path = require('path');
+
+const app = express();
+````
+
 - Importere Express-bibliotek
     - Gjør det mulig å lage server raskt
     - Gir oss funksjoner som app.get() og app.listen()
@@ -86,9 +95,39 @@ Vi skal gjøre følgende
     - app er hele server-applikasjonen
     - Her bygger vi routes og regler
 
-````
-const express = require('express');
-const path = require('path');
+***STEG 2 - Route (Koble til HTML)***
 
-const app = express();
 ````
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+````
+
+Når noen går til / (hovedsiden):
+- serveren mottar request (req)
+- serveren sender response (res)
+- den sender tilbake en HTML-fil
+
+app.get('/')
+- Lager en route (URL)
+- / = forsiden av nettsiden
+
+(req, res) => {}
+- req = request (det brukeren sender)
+- res = response (det serveren sender tilbake)
+
+res.sendFile(...)
+- Sender HTML-fil til nettleseren
+
+__dirname
+- betyr “mappen denne filen ligger i”
+
+path.join(...)
+- lager riktig filsti
+- fungerer på Mac, Windows og Linux
+
+```
+app.listen(3003, () => {
+    console.log('Server running on http://localhost:3003');
+});
+```
