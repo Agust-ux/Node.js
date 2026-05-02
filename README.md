@@ -145,13 +145,15 @@ Vi skal
 - skjule sensitive data fra koden
 - strukturere prosjektet litt mer “ekte backend”
 
-**Installasjoner**
+**Steg 1- Installasjoner**
 ```
 brew install mariadb
 brew install mysql
 
 npm install dotenv
 ```
+
+**Steg 2- Koble Node.js til Databasen**
 
 *Legg til disse to filene i rot mappen*
 ```
@@ -172,8 +174,9 @@ DB_LIMIT=5
 node_modules
 .env
 ````
+Det ligger en eksempel SQL tabell i repo-et om dere vil teste ut.
 
-**Koble databasen til server.js**
+**Steg 3- Koble databasen til server.js**
 
 Server.js:
 Laster inn:
@@ -197,6 +200,84 @@ const pool = mariadb.createPool({
 });
 ````
 
-Hente data fra databasen:
+**Steg 4- Hente data fra databasen til API-endpoint**
 
 Når vi koblet index.html til serveren brukte vi **app.get** som betyr at vi ber node å hente data
+Nå skal vi bruke **HTTP-elementen (GET)** til å hente data fra databasen
+
+Vi skal begynne med å lage en API-endpoint- det som sender data til server.js.
+```
+app.get('/books', async (req, res) => {
+    *Her skal vi få inn data*
+});
+```
+Koble til databasen:
+```
+conn = await pool.getConnection();
+```
+
+Hente data fra tabeller:
+````
+const books = await conn.query(
+    "SELECT title, author, year_published FROM books"
+);
+````
+
+Sende data tilbake:
+`````
+res.json(books);
+`````
+
+*TIPS! - Legg til error handling*
+````
+catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+}
+````
+
+Lukke connection
+`````
+finally {
+    if (conn) conn.end();
+}
+`````
+
+**Steg 4- Vise data på forsiden**
+
+Nå jobber vi med index.html
+Inn i script skal vi hente data fra endpoint til forsiden vår
+
+````
+const response = await fetch("/books");
+const books = await response.json();
+````
+Dette sender request til server (/books) og får JSON tilbake
+
+For å vise data på siden:
+````
+books.forEach(book => {
+    container.innerHTML += `
+        <p>
+            ${book.title} - ${book.author} (${book.year_published})
+        </p>
+    `;
+});
+````
+Looper gjennom alle bøker og viser dem
+
+*Feil melding?*
+````
+catch (error) {
+    document.getElementById("userData").innerHTML =
+        "<p>Kunne ikke hente bøker</p>";
+}
+````
+Dette viser deg feilmeldingen i stedet for å krasje helt
+
+Start server med nodemon server.js
+
+Du kan også se JSON direkte ve å gå inn på
+```
+http://localhost:3003/books
+```
