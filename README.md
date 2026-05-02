@@ -139,7 +139,7 @@ Nå skal vi ta serveren ett steg videre
 
 Vi skal
 - koble Node.js til en database
-- hente data fra en tabell (users)
+- hente data fra en tabell 
 - lage API-endpoints (/api/users, /filter)
 - bruke .env for sikkerhet
 - skjule sensitive data fra koden
