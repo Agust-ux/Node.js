@@ -146,9 +146,10 @@ Vi skal
 - strukturere prosjektet litt mer “ekte backend”
 
 **Steg 1- Installasjoner**
+
+Dette kurset baserer seg på MariaDB
 ```
 brew install mariadb
-brew install mysql
 
 npm install dotenv
 ```
@@ -161,7 +162,7 @@ npm install dotenv
 .gitignore
 ```
 
-.env filen inneholder sensitivt data som:
+.env filen inneholder sensitiv data som:
 ````
 DB_HOST=localhost
 DB_USER=root
@@ -203,7 +204,7 @@ const pool = mariadb.createPool({
 **Steg 4- Hente data fra databasen til API-endpoint**
 
 Når vi koblet index.html til serveren brukte vi **app.get** som betyr at vi ber node å hente data
-Nå skal vi bruke **HTTP-elementen (GET)** til å hente data fra databasen
+Nå skal vi bruke **HTTP-metoden (GET)** til å hente data fra databasen
 
 Vi skal begynne med å lage en API-endpoint- det som sender data til server.js.
 ```
@@ -243,7 +244,7 @@ finally {
 }
 `````
 
-**Steg 4- Vise data på forsiden**
+**Steg 5- Vise data på forsiden**
 
 Nå jobber vi med index.html
 Inn i script skal vi hente data fra endpoint til forsiden vår
@@ -277,7 +278,7 @@ Dette viser deg feilmeldingen i stedet for å krasje helt
 
 Start server med nodemon server.js
 
-Du kan også se JSON direkte ve å gå inn på
+Du kan også se JSON direkte ved å gå inn på
 ```
 http://localhost:3003/books
 ```
