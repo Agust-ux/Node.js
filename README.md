@@ -69,7 +69,7 @@ npm install -g nodemon
 
 Vi skal gjøre følgende
 
-***STEG 1 - Grunnleggende oppsett***
+***STEG 1 - Grunnleggende oppsett i server.js***
 
 ````
 const express = require('express');
